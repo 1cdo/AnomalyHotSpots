@@ -29,6 +29,7 @@ FROM [RMS_dw_prod].[dbo].[C_VW_Occurrence_w_Location]
 WHERE StartTime >= DATEADD(YEAR,-3, GETDATE())
 AND LocationType like '%Occurrence%'
 AND XCoordinate > 0
+AND NOT (XCoordinate = 15522815	AND YCoordinate = 550514707)
 ",as.is = c(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE))
 
 category_data = dbGetQuery(con,"SELECT Code UCRCode, Subcode UCRSubcode, Category
@@ -47,9 +48,10 @@ JOIN [dbo].[OccIvPerson]
 ON [C_VW_Occurrence_w_Location].Id = [OccIvPerson].LId
 JOIN [dbo].[Person]
 ON [OccIvPerson].RId = [Person].Id
-WHERE XCoordinate > 0 AND
-[C_VW_Occurrence_w_Location].StartTime >= DATEADD(YEAR,-3, GETDATE()) AND
-DeceasedTime is NULL 
+WHERE XCoordinate > 0
+AND NOT (XCoordinate = 15522815	AND YCoordinate = 550514707) 
+AND [C_VW_Occurrence_w_Location].StartTime >= DATEADD(YEAR,-3, GETDATE()) 
+AND DeceasedTime is NULL 
 AND (OccIvPerson.ClassificationG like '%Adult accused diverted%'
 OR OccIvPerson.ClassificationG like '%Arrested%'
 OR OccIvPerson.ClassificationG like '%Associated to search warrant%'
